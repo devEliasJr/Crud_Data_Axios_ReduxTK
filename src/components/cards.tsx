@@ -18,6 +18,12 @@ import { useDeleteUserMutate } from "../hooks/useUserMutate";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
+import { useEffect } from "react";
+
+import { getAllData } from "../Slices/userSlice";
+import { useQueryContext } from "../Contexts/useQueryContext";
+import { useAppDispatch, useAppSelector } from "../hooks/useFetchData";
+
 const CustomCard = ({ title, link, id }: ICustomCardProps) => {
   const [userId, setUserId] = useState<number | undefined>();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -87,13 +93,35 @@ const CustomCard = ({ title, link, id }: ICustomCardProps) => {
   );
 };
 
-type IUserProps = {
-  user: IDataProps[] | undefined;
-  loading: boolean;
-  error: Error | null;
-};
+export default function CardsComponent() {
+  const dispatch = useAppDispatch();
 
-export default function CardsComponent({ user, error, loading }: IUserProps) {
+  const { users, message, error, loading } = useAppSelector(
+    (state) => state.users
+  );
+  const { query } = useQueryContext();
+
+  const [filteredData, setFilteredData] = useState<IDataProps[]>([]);
+
+  console.log(users, message, error, loading);
+
+  useEffect(() => {
+    if (query && users) {
+      const lowerCaseQuery = query.toLowerCase();
+      const newData = users.filter((user: IDataProps) =>
+        user.name.toLocaleLowerCase().includes(lowerCaseQuery)
+      );
+      setFilteredData(newData);
+    } else {
+      setFilteredData(users);
+    }
+  }, [query, users]);
+
+  // Load user data
+  useEffect(() => {
+    dispatch(getAllData());
+  }, [dispatch]);
+
   return (
     <Box maxWidth={"1500px"} m={"0 auto"} p={2}>
       <Grid container spacing={2}>
@@ -115,12 +143,12 @@ export default function CardsComponent({ user, error, loading }: IUserProps) {
         {error ? (
           <Box width={"100%"} py={8}>
             <Box display={"flex"} justifyContent={"center"}>
-              <Alert severity="error">{error.message}</Alert>
+              <Alert severity="error">{error}</Alert>
             </Box>
           </Box>
         ) : (
-          user &&
-          user.map((item) => (
+          filteredData &&
+          filteredData.map((item) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={Math.random()}>
               <CustomCard id={item.id} title={item.name} link={item.url} />
             </Grid>

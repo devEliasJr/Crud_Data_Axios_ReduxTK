@@ -1,5 +1,8 @@
 import { api } from "./useapi";
 
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "../store";
+
 export const getAllData = async () => {
   const response = await api.get<IDataProps[]>("/products");
 
@@ -31,3 +34,7 @@ export const deletePost = async (userId: number) => {
 
   return response.data;
 };
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
