@@ -8,15 +8,21 @@ import AppQueryProvider from "./Contexts/useQueryContext.tsx";
 
 const client = new QueryClient();
 
+//Redux
+import { Provider } from "react-redux";
+import { store } from "./store";
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <AppQueryProvider>
-      <QueryClientProvider client={client}>
-        <ThemeProvider theme={darkTheme}>
-          <CssBaseline />
-          <App />
-        </ThemeProvider>
-      </QueryClientProvider>
-    </AppQueryProvider>
+    <Provider store={store}>
+      <AppQueryProvider>
+        <QueryClientProvider client={client}>
+          <ThemeProvider theme={darkTheme}>
+            <CssBaseline />
+            <App />
+          </ThemeProvider>
+        </QueryClientProvider>
+      </AppQueryProvider>
+    </Provider>
   </React.StrictMode>
 );

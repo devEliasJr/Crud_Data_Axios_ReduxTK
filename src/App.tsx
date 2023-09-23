@@ -10,7 +10,9 @@ import {
 } from "react-router-dom";
 import HomePage from "./pages/Home";
 import DefaultLayout from "./layouts";
-
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getAllData } from "./Slices/userSlice";
 
 export default function App() {
   const router = createBrowserRouter(
@@ -21,6 +23,16 @@ export default function App() {
       </Route>
     )
   );
+
+  const { user, message, error, loading } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  console.log(user);
+
+  // Load user data
+  useEffect(() => {
+    dispatch(getAllData());
+  }, [dispatch]);
 
   return (
     <Box width={"100%"}>
