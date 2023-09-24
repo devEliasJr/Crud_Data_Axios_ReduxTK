@@ -2,17 +2,19 @@ import { Box, Button, FormControl, Paper, TextField } from "@mui/material";
 import { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
-import { useCreateUserMutate } from "../hooks/useUserMutate";
+import { useAppDispatch } from "../hooks/useFetchData";
+import { createUser } from "../Slices/userSlice";
 
 export default function FormComponent() {
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
 
+
   const navigate = useNavigate();
-  const { mutate } = useCreateUserMutate();
+  const  dispatch = useAppDispatch()
 
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const userData = {
@@ -21,7 +23,7 @@ export default function FormComponent() {
       description: "Description",
     };
 
-    mutate(userData)
+    await dispatch(createUser(userData));
 
     setName("");
     setUrl("");
