@@ -23,8 +23,8 @@ export const createPost = async (
   return response.data;
 };
 
-export const updatePost = async ({ userId, data }: IDataEditProps) => {
-  const response = await api.put(`/products/${userId}`, data);
+export const updatePost = async ({ userId, userData }: IDataEditProps) => {
+  const response = await api.put(`/products/${userId}`, userData);
 
   return response.data;
 };
