@@ -11,16 +11,15 @@ import {
   Typography,
 } from "@mui/material";
 import SkeletonComponent from "./skeleton";
-import { useState } from "react";
 
 import EditUserModal from "./modal";
-import { useDeleteUserMutate } from "../hooks/useUserMutate";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { getAllData } from "../Slices/userSlice";
+import { deleteUser, getAllData } from "../Slices/userSlice";
 import { useQueryContext } from "../Contexts/useQueryContext";
 import { useAppDispatch, useAppSelector } from "../hooks/useFetchData";
 
@@ -28,7 +27,7 @@ const CustomCard = ({ title, link, id }: ICustomCardProps) => {
   const [userId, setUserId] = useState<number | undefined>();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const { mutate } = useDeleteUserMutate();
+  const dispatch = useAppDispatch()
 
   const handleEdit = async (id: number) => {
     setUserId(id);
@@ -45,7 +44,7 @@ const CustomCard = ({ title, link, id }: ICustomCardProps) => {
     );
 
     if (shouldDelete) {
-      mutate(id);
+      dispatch(deleteUser(id))
     }
   };
 
@@ -96,14 +95,15 @@ const CustomCard = ({ title, link, id }: ICustomCardProps) => {
 export default function CardsComponent() {
   const dispatch = useAppDispatch();
 
-  const { users, message, error, loading } = useAppSelector(
-    (state) => state.users
-  );
+  const { users, error, loading } = useAppSelector((state) => state.users);
+
+  // Load usefilteredData data
+  useEffect(() => {
+    dispatch(getAllData());
+  }, [dispatch]);
+
   const { query } = useQueryContext();
-
   const [filteredData, setFilteredData] = useState<IDataProps[]>([]);
-
-  console.log(users, message, error, loading);
 
   useEffect(() => {
     if (query && users) {
@@ -116,11 +116,6 @@ export default function CardsComponent() {
       setFilteredData(users);
     }
   }, [query, users]);
-
-  // Load user data
-  useEffect(() => {
-    dispatch(getAllData());
-  }, [dispatch]);
 
   return (
     <Box maxWidth={"1500px"} m={"0 auto"} p={2}>
@@ -148,6 +143,7 @@ export default function CardsComponent() {
           </Box>
         ) : (
           filteredData &&
+          !loading &&
           filteredData.map((item) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={Math.random()}>
               <CustomCard id={item.id} title={item.name} link={item.url} />
