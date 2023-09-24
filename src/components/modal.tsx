@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, TextField, Box } from "@mui/material";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
-import { useAppDispatch, useAppSelector } from "../hooks/useFetchData";
-import { editUser } from "../Slices/userSlice";
+import { useAppDispatch, useAppSelector } from "../hooks/useAppReduxActions";
+import { editUser } from "../Store/Slices/userSlice";
 
 type EditUserModalProps = {
   isOpen: boolean;
@@ -37,8 +37,6 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
       name,
       url,
     };
-
-    console.log(userData);
     dispatch(editUser({ userId, userData }));
     onClose();
   };

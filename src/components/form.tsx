@@ -2,8 +2,8 @@ import { Box, Button, FormControl, Paper, TextField } from "@mui/material";
 import { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../hooks/useFetchData";
-import { createUser } from "../Slices/userSlice";
+import { useAppDispatch } from "../hooks/useAppReduxActions";
+import { createUser } from "../Store/Slices/userSlice";
 
 export default function FormComponent() {
   const [name, setName] = useState("");

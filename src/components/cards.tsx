@@ -19,15 +19,15 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import { useEffect, useState } from "react";
 
-import { deleteUser, getAllData } from "../Slices/userSlice";
+import { deleteUser, getAllData } from "../Store/Slices/userSlice";
 import { useQueryContext } from "../Contexts/useQueryContext";
-import { useAppDispatch, useAppSelector } from "../hooks/useFetchData";
+import { useAppDispatch, useAppSelector } from "../hooks/useAppReduxActions";
 
 const CustomCard = ({ title, link, id }: ICustomCardProps) => {
   const [userId, setUserId] = useState<number | undefined>();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const handleEdit = async (id: number) => {
     setUserId(id);
@@ -44,7 +44,7 @@ const CustomCard = ({ title, link, id }: ICustomCardProps) => {
     );
 
     if (shouldDelete) {
-      dispatch(deleteUser(id))
+      dispatch(deleteUser(id));
     }
   };
 
@@ -96,6 +96,7 @@ export default function CardsComponent() {
   const dispatch = useAppDispatch();
 
   const { users, error, loading } = useAppSelector((state) => state.users);
+
 
   // Load usefilteredData data
   useEffect(() => {
