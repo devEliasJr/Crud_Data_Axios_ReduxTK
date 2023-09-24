@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, TextField, Box } from "@mui/material";
-import { useGetUserById } from "../hooks/useUserApiQuery";
-import { useUpdateUserMutate } from "../hooks/useUserMutate";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
+import { useAppDispatch, useAppSelector } from "../hooks/useFetchData";
+import { editUser } from "../Slices/userSlice";
 
 type EditUserModalProps = {
   isOpen: boolean;
@@ -29,9 +29,8 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
   const [name, setName] = useState<string>("");
   const [url, setUrl] = useState<string>("");
 
-  const { data } = useGetUserById(userId);
-  const { mutate } = useUpdateUserMutate();
-  
+  const { users } = useAppSelector((state) => state.users);
+  const dispatch = useAppDispatch();
 
   const handleSave = async () => {
     const userData = {
@@ -39,21 +38,20 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
       url,
     };
 
-    const dataEditProps = {
-      userId,
-      data: userData,
-    };
-
-    mutate(dataEditProps);
+    console.log(userData);
+    dispatch(editUser({ userId, userData }));
     onClose();
   };
 
   useEffect(() => {
-    if (data) {
-      setName(data.name);
-      setUrl(data.url);
+    const user = users.find((user) => user.id === userId);
+    if (user) {
+      setName(user.name);
+      setUrl(user.url);
+      return;
     }
-  }, [data]);
+    return;
+  }, [userId]);
 
   return (
     <Modal
