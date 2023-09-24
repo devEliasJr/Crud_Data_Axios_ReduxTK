@@ -18,7 +18,7 @@ type UserData = {
 
 interface IDataEditProps {
   userId: number;
-  data: UserData;
+  userData: any;
 }
 
 interface IReactFcProps {
