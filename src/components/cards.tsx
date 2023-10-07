@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import { deleteUser, getAllData } from "../Store/Slices/userSlice";
 import { useQueryContext } from "../Contexts/useQueryContext";
 import { useAppDispatch, useAppSelector } from "../hooks/useAppReduxActions";
+import Pagination from "@mui/material/Pagination";
 
 const CustomCard = ({ title, link, id }: ICustomCardProps) => {
   const [userId, setUserId] = useState<number | undefined>();
@@ -50,7 +51,6 @@ const CustomCard = ({ title, link, id }: ICustomCardProps) => {
 
   return (
     <Card key={id}>
-      {/* <EditCardModal /> */}
       <CardContent>
         <Typography component={"h5"}>{title}</Typography>
       </CardContent>
@@ -82,7 +82,6 @@ const CustomCard = ({ title, link, id }: ICustomCardProps) => {
           Delete
         </Button>
       </CardActions>
-      {/* Modal de edição */}
       <EditUserModal
         isOpen={isEditModalOpen}
         onClose={handleCloseEditModal}
@@ -97,14 +96,22 @@ export default function CardsComponent() {
 
   const { users, error, loading } = useAppSelector((state) => state.users);
 
-
-  // Load usefilteredData data
   useEffect(() => {
     dispatch(getAllData());
   }, [dispatch]);
 
   const { query } = useQueryContext();
   const [filteredData, setFilteredData] = useState<IDataProps[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  //@ts-ignore - if you want use this state to set itens per page dynamically
+  const [itensPerPage, setItensPerPage] = useState(6);
+
+  const page = Math.ceil(filteredData.length / itensPerPage);
+
+  const initialIndex = (currentPage - 1) * itensPerPage;
+  const endIndex = initialIndex + itensPerPage;
+  const currentIndex = filteredData?.slice(initialIndex, endIndex);
 
   useEffect(() => {
     if (query && users) {
@@ -143,15 +150,28 @@ export default function CardsComponent() {
             </Box>
           </Box>
         ) : (
-          filteredData &&
+          currentIndex &&
           !loading &&
-          filteredData.map((item) => (
+          currentIndex.map((item) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={Math.random()}>
               <CustomCard id={item.id} title={item.name} link={item.url} />
             </Grid>
           ))
         )}
       </Grid>
+      <Box margin={"0 auto"} display={"flex"} justifyContent={"center"} py={2}>
+        {!loading && (
+          <Pagination
+            count={page}
+            page={currentPage}
+            // @ts-ignore - Mui requires 'e' to work
+            onChange={(e, newvalue) => setCurrentPage(newvalue)}
+            variant="text"
+            color="secondary"
+            sx={{ background: "white", padding: "10px", borderRadius: "4px" }}
+          />
+        )}
+      </Box>
     </Box>
   );
 }
