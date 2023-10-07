@@ -1,27 +1,27 @@
-import { blue, red } from '@mui/material/colors';
-import { createTheme} from '@mui/material/styles';
-
+import { blue, red } from "@mui/material/colors";
+import { createTheme } from "@mui/material/styles";
 
 const darkTheme = createTheme({
   palette: {
     primary: {
-      main: red[500],
-      contrastText: "#ffff"
+      main: red[700],
+      light: red[600],
+      dark: red[800],
+      contrastText: "#ffff",
     },
     secondary: {
       main: blue[500],
-      contrastText: "#ffff"
+      contrastText: "#ffff",
     },
     background: {
-      default: '#212121', // Cor de fundo padrão para o tema escuro
-      paper: '#f1f1f1', // Cor do papel ou superfície de fundo
+      default: "#212121", // Cor de fundo padrão para o tema escuro
+      paper: "#f1f1f1", // Cor do papel ou superfície de fundo
     },
-//     text: {
-//       primary: '#FFFFFF', // Cor do texto principal
-//       secondary: '#B0B0B0', // Cor do texto secundário
-//     },
+    text: {
+      primary: "#000",
+      secondary: "#fff",
+    },
   },
-  
 });
 
 export default darkTheme;
